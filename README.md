@@ -1,7 +1,7 @@
 # postgres-go
 
-A gnorm solution for generating strongly typed database/sql wrappers for
-postgres.
+A gnorm solution for generating strongly typed database/sql wrappers for postgres.  Note: updates
+will come that will likely make this usable for Postgres or MySQL.
 
 
 ## Magic Strings (what most people write with other ORMs)
@@ -114,6 +114,8 @@ bunch of changes into a transaction if you want.
 ## TODOs
 
 Implement joins when foreign keys land in gnorm (which will be soon!).
+
+Support for array columns.
 
 There's probably a lot of optimizations that could be made to the code.
 Pull requests are welcome.

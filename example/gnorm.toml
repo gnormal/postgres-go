@@ -13,7 +13,7 @@ NameConversion = "{{pascal .}}"
 # This will output the files in a subdirectory called "gnorm".  You can change
 # this, but if you do, change the RootPkg definition below to match what the
 # package name should be.
-OutputDir = "example/gnorm"
+OutputDir = "gnorm"
 
 [Params]
 # RootPkg is the package declaration for the output dir. It should match the
