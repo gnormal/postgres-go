@@ -19,7 +19,7 @@ Do you have code in your repo that looks like this?
 Sure, it works now. What happens if you pass, say, a UUID into that first line?  It'll compile.
 It'll run.. until it hits that exact line, and then it'll error out at runtime.
 
-What happens if you typo "code" in that first line?  Again, runtime error.
+What happens if you typo "coed" in that first line?  Again, runtime error.
 
 What happens if you someday migrate your database and decide that "Price" should now be called
 "ItemPrice"?  Runtime error.
