@@ -1,0 +1,62 @@
+# !!!! YOU NEED TO CHANGE THIS !!!!
+# This is the connection string for your database
+ConnStr = "dbname=sproutling host=127.0.0.1 sslmode=disable user=sproutling"
+
+DBType = "postgres"
+
+Schemas = ["public"]
+
+PostRun = ["goimports", "-w", "$GNORMFILE"]
+
+NameConversion = "{{pascal .}}"
+
+# This will output the files in a subdirectory called "gnorm"
+OutputDir = "gnorm"
+
+[Params]
+# RootPkg is the package declaration for the output dir. It should match the
+# directory name above. 
+RootPkg = "gnorm"
+
+# !!!! YOU NEED TO CHANGE THIS !!!!
+# RootImport is the import path for the output directory.
+RootImport = "gnorm.org/postgres-go/gnorm"
+
+[SchemaPaths]
+"fields.go" = "templates/fields.gotmpl"
+"db.go" = "templates/db.gotmpl"
+
+[TablePaths]
+"{{toLower .Table}}/{{toLower .Table}}.go" = "templates/table.gotmpl"
+
+[EnumPaths]
+"enum/{{toLower .Enum}}.go" = "templates/enum.gotmpl"
+
+[TypeMap]
+"timestamp with time zone" = "time.Time"
+"text" = "string"
+"boolean" = "bool"
+# from "github.com/satori/go.uuid"
+"uuid" = "uuid.UUID"
+"character varying" = "string"
+"integer" = "int"
+"numeric" = "float64"
+# from "github.com/lib/pq/hstore"
+"hstore" = "hstore.Hstore"
+# note that the package name here has to be kept in sync with the RootPkg above.
+"jsonb" = "gnorm.Jsonb"
+# the package name here needs to be kept in sync with the enum template's package name
+"user_role" = "enum.UserRole"
+
+
+[NullableTypeMap]
+"timestamp with time zone" = "pq.NullTime"
+"text" = "sql.NullString"
+"boolean" = "sql.NullBool"
+"uuid" = "uuid.NullUUID"
+"character varying" = "sql.NullString"
+"integer" = "sql.NullInt64"
+"numeric" = "sql.NullFloat64"
+"hstore" = "hstore.Hstore"
+# note that the package name here has to be kept in sync with the RootPkg above.
+"jsonb" = "gnorm.Jsonb"
