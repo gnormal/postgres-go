@@ -4,7 +4,7 @@ A gnorm solution for generating strongly typed database/sql wrappers for
 postgres.
 
 
-## Magic Strings (don't do this)
+## Magic Strings (what most people write with other ORMs)
 
 Do you have code in your repo that looks like this?
 
