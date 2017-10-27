@@ -1,4 +1,4 @@
-The code in this directory was generated with the solution in this repo, against a db defined with the following sql:
+The code in this directory was generated with the solution in this repo, against a db defined like so:
 
 ```
                 List of relations
@@ -6,7 +6,6 @@ The code in this directory was generated with the solution in this repo, against
 --------+----------------+----------+------------
  public | authors        | table    | gnorm-user
  public | books          | table    | gnorm-user
-(4 rows)
 
 
                Table "public.authors"
@@ -39,7 +38,7 @@ Indexes:
 Foreign-key constraints:
     "books_author_id_fkey" FOREIGN KEY (author_id) REFERENCES authors(id)
 
-    
+
                                           List of data types
  Schema |   Name    | Internal name | Size |  Elements  |   Owner    | Access privileges | Description
 --------+-----------+---------------+------+------------+------------+-------------------+-------------
