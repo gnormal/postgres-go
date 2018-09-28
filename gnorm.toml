@@ -4,7 +4,7 @@ ConnStr = "dbname=gnorm-db host=127.0.0.1 sslmode=disable user=gnorm-user"
 
 DBType = "postgres"
 
-Schemas = ["public"]
+Schemas = ["public","product_catalog"]
 
 PostRun = ["goimports", "-w", "$GNORMFILE"]
 
@@ -13,26 +13,30 @@ NameConversion = "{{pascal .}}"
 # This will output the files in a subdirectory called "gnorm".  You can change
 # this, but if you do, change the RootPkg definition below to match what the
 # package name should be.
-OutputDir = "example/gnorm"
+OutputDir = "./generated"
+
+ExcludeTables = ["schema_version"]
+
+PluginDirs = ["./gnorm_templates/plugin"]
 
 [Params]
 # RootPkg is the package declaration for the output dir. It should match the
 # directory name above. You may change this as appropriate.
-RootPkg = "gnorm"
+RootPkg = "generated"
 
-# !!!! YOU NEED TO CHANGE THIS !!!!
+# !!! You need to change this!
 # RootImport is the import path for the output directory.
-RootImport = "gnorm.org/postgres-go/example/gnorm"
+RootImport = "github.com/gnormal/postgres-go/generated"
 
 [SchemaPaths]
-"fields.go" = "templates/fields.gotmpl"
-"db.go" = "templates/db.gotmpl"
+"fields.go" = "gnorm_templates/fields.gotmpl"
+"db.go" = "gnorm_templates/db.gotmpl"
 
 [TablePaths]
-"{{toLower .Table}}/{{toLower .Table}}.go" = "templates/table.gotmpl"
+"{{toLower .Schema}}/{{toLower .Table}}/{{toLower .Table}}.go" = "gnorm_templates/table.gotmpl"
 
 [EnumPaths]
-"enum/{{toLower .Enum}}.go" = "templates/enum.gotmpl"
+"{{toLower .Schema}}/enum/{{toLower .Enum}}.go" = "gnorm_templates/enum.gotmpl"
 
 [TypeMap]
 "timestamp with time zone" = "time.Time"
@@ -40,20 +44,23 @@ RootImport = "gnorm.org/postgres-go/example/gnorm"
 "varchar" = "string"
 "text" = "string"
 "boolean" = "bool"
-# from "github.com/satori/go.uuid"
+# from "github.com/gofrs/go.uuid"
 "uuid" = "uuid.UUID"
 "character varying" = "string"
 "character" = "string"
+"smallint" = "int"
 "integer" = "int"
 "int4" = "int32"
+"int8" = "int64"
 "numeric" = "float64"
+"bigint" = "int64"
 # from "github.com/lib/pq/hstore"
 "hstore" = "hstore.Hstore"
 # note that the package name here has to be kept in sync with the RootPkg above.
-"jsonb" = "gnorm.Jsonb"
+"jsonb" = "generated.Jsonb"
 # the package name here needs to be kept in sync with the enum template's package name
+"bytea" = "generated.Bytea"
 "book_type" = "enum.BookType"
-
 
 [NullableTypeMap]
 "timestamp with time zone" = "pq.NullTime"
@@ -66,4 +73,4 @@ RootImport = "gnorm.org/postgres-go/example/gnorm"
 "numeric" = "sql.NullFloat64"
 "hstore" = "hstore.Hstore"
 # note that the package name here has to be kept in sync with the RootPkg above.
-"jsonb" = "gnorm.Jsonb"
+"jsonb" = "generated.Jsonb"

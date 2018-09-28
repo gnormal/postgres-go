@@ -2,7 +2,10 @@
 
 package enum
 
-import "{{.Params.RootImport}}"
+import (
+	"{{.Params.RootImport}}"
+	"github.com/pkg/errors"
+)
 
 {{$rootPkg := .Params.RootPkg}}
 
@@ -12,7 +15,7 @@ import "{{.Params.RootImport}}"
 type {{ $type }} uint16
 
 const (
-    // Unknown{{$type}} defines an invalid {{$type}}. 
+    // Unknown{{$type}} defines an invalid {{$type}}.
     Unknown{{$type}} {{$type}} = 0
 {{- range .Enum.Values }}
 	{{ .Name }}{{ $type }} {{$type}} = {{ .Value }}
@@ -24,7 +27,7 @@ func (e {{ $type }}) String() string {
 	switch e {
 {{- range .Enum.Values }}
 	case {{ .Name }}{{ $type }}:
-		return "{{ .Name }}"
+		return "{{ .DBName }}"
 {{- end }}
 	default:
     	return "Unknown{{$type}}"
@@ -51,7 +54,7 @@ func (e *{{ $type }}) UnmarshalText(text []byte) error {
 func Parse{{$type}}(s string) ({{$type}}, error) {
 	switch s {
 {{- range .Enum.Values }}
-	case "{{ .Name }}":
+	case "{{ .DBName }}":
 		return {{ .Name }}{{ $type }}, nil
 {{- end }}
 	default:
@@ -74,12 +77,12 @@ func (e *{{ $type }}) Scan(src interface{}) error {
 	return e.UnmarshalText(buf)
 }
 
-// {{$type}}Field is a component that returns a {{$rootPkg}}.WhereClause that contains a
+// {{$type}}Field is a component that returns a {{$rootPkg}}.Where that contains a
 // comparison based on its field and a strongly typed value.
 type {{$type}}Field string
 
 // Equals returns a {{$rootPkg}}.WhereClause for this field.
-func (f {{$type}}Field) Equals(v {{$type}}) {{$rootPkg}}.WhereClause {
+func (f {{$type}}Field) Equals(v {{$type}}) {{$rootPkg}}.Where {
 	return {{$rootPkg}}.Where{
 		Field: string(f),
 		Comp:  {{$rootPkg}}.CompEqual,
@@ -87,8 +90,8 @@ func (f {{$type}}Field) Equals(v {{$type}}) {{$rootPkg}}.WhereClause {
 	}
 }
 
-// GreaterThan returns a {{$rootPkg}}.WhereClause for this field.
-func (f {{$type}}Field) GreaterThan(v {{$type}}) {{$rootPkg}}.WhereClause {
+// GreaterThan returns a {{$rootPkg}}.Where for this field.
+func (f {{$type}}Field) GreaterThan(v {{$type}}) {{$rootPkg}}.Where {
 	return {{$rootPkg}}.Where{
 		Field: string(f),
 		Comp:  {{$rootPkg}}.CompGreater,
@@ -96,8 +99,8 @@ func (f {{$type}}Field) GreaterThan(v {{$type}}) {{$rootPkg}}.WhereClause {
 	}
 }
 
-// LessThan returns a {{$rootPkg}}.WhereClause for this field.
-func (f {{$type}}Field) LessThan(v {{$type}}) {{$rootPkg}}.WhereClause {
+// LessThan returns a {{$rootPkg}}.Where for this field.
+func (f {{$type}}Field) LessThan(v {{$type}}) {{$rootPkg}}.Where {
 	return {{$rootPkg}}.Where{
 		Field: string(f),
 		Comp:  {{$rootPkg}}.CompEqual,
@@ -105,8 +108,8 @@ func (f {{$type}}Field) LessThan(v {{$type}}) {{$rootPkg}}.WhereClause {
 	}
 }
 
-// GreaterOrEqual returns a {{$rootPkg}}.WhereClause for this field.
-func (f {{$type}}Field) GreaterOrEqual(v {{$type}}) {{$rootPkg}}.WhereClause {
+// GreaterOrEqual returns a {{$rootPkg}}.Where for this field.
+func (f {{$type}}Field) GreaterOrEqual(v {{$type}}) {{$rootPkg}}.Where {
 	return {{$rootPkg}}.Where{
 		Field: string(f),
 		Comp:  {{$rootPkg}}.CompGTE,
@@ -114,8 +117,8 @@ func (f {{$type}}Field) GreaterOrEqual(v {{$type}}) {{$rootPkg}}.WhereClause {
 	}
 }
 
-// LessOrEqual returns a {{$rootPkg}}.WhereClause for this field.
-func (f {{$type}}Field) LessOrEqual(v {{$type}}) {{$rootPkg}}.WhereClause {
+// LessOrEqual returns a {{$rootPkg}}.Where for this field.
+func (f {{$type}}Field) LessOrEqual(v {{$type}}) {{$rootPkg}}.Where {
 	return {{$rootPkg}}.Where{
 		Field: string(f),
 		Comp:  {{$rootPkg}}.CompLTE,
@@ -123,8 +126,8 @@ func (f {{$type}}Field) LessOrEqual(v {{$type}}) {{$rootPkg}}.WhereClause {
 	}
 }
 
-// NotEqual returns a {{$rootPkg}}.WhereClause for this field.
-func (f {{$type}}Field) NotEqual(v {{$type}}) {{$rootPkg}}.WhereClause {
+// NotEqual returns a {{$rootPkg}}.Where for this field.
+func (f {{$type}}Field) NotEqual(v {{$type}}) {{$rootPkg}}.Where {
 	return {{$rootPkg}}.Where{
 		Field: string(f),
 		Comp:  {{$rootPkg}}.CompNE,
@@ -133,8 +136,8 @@ func (f {{$type}}Field) NotEqual(v {{$type}}) {{$rootPkg}}.WhereClause {
 }
 
 
-// In returns a {{$rootPkg}}.WhereClause for this field.
-func (f {{$type}}Field) In(vals []{{$type}}) {{$rootPkg}}.WhereClause {
+// In returns a {{$rootPkg}}.Where for this field.
+func (f {{$type}}Field) In(vals []{{$type}}) {{$rootPkg}}.InClause {
 	values := make([]interface{}, len(vals))
 	for x := range vals {
 		values[x] = vals[x]

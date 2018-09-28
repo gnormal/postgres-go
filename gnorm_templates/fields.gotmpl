@@ -4,17 +4,18 @@ package {{.Params.RootPkg}}
 
 import (
 	"github.com/lib/pq"
-	uuid "github.com/satori/go.uuid"	
+	uuid "github.com/gofrs/uuid"
+	"github.com/pkg/errors"
 )
 
-{{ range (makeSlice "Jsonb" "int" "string" "sql.NullString" "int64" "sql.NullInt64" "float64" "sql.NullFloat64" "bool" "sql.NullBool" "time.Time" "pq.NullTime" "uint32" "uuid.UUID" "uuid.NullUUID" "hstore.Hstore") }}
+{{ range (makeSlice "Jsonb" "int" "int32" "string" "sql.NullString" "int64" "sql.NullInt64" "float64" "sql.NullFloat64" "bool" "sql.NullBool" "time.Time" "pq.NullTime" "uint32"  "uuid.UUID" "uuid.NullUUID" "hstore.Hstore" "Bytea") }}
 {{ $fieldName := title (replace . "." "" 1) }}
 // {{$fieldName}}Field is a component that returns a WhereClause that contains a
 // comparison based on its field and a strongly typed value.
 type {{$fieldName}}Field string
 
 // Equals returns a WhereClause for this field.
-func (f {{$fieldName}}Field) Equals(v {{.}}) WhereClause {
+func (f {{$fieldName}}Field) Equals(v {{.}}) Where {
 	return Where{
 		Field: string(f),
 		Comp:  CompEqual,
@@ -23,7 +24,7 @@ func (f {{$fieldName}}Field) Equals(v {{.}}) WhereClause {
 }
 
 // GreaterThan returns a WhereClause for this field.
-func (f {{$fieldName}}Field) GreaterThan(v {{.}}) WhereClause {
+func (f {{$fieldName}}Field) GreaterThan(v {{.}}) Where {
 	return Where{
 		Field: string(f),
 		Comp:  CompGreater,
@@ -32,7 +33,7 @@ func (f {{$fieldName}}Field) GreaterThan(v {{.}}) WhereClause {
 }
 
 // LessThan returns a WhereClause for this field.
-func (f {{$fieldName}}Field) LessThan(v {{.}}) WhereClause {
+func (f {{$fieldName}}Field) LessThan(v {{.}}) Where {
 	return Where{
 		Field: string(f),
 		Comp:  CompLess,
@@ -41,7 +42,7 @@ func (f {{$fieldName}}Field) LessThan(v {{.}}) WhereClause {
 }
 
 // GreaterOrEqual returns a WhereClause for this field.
-func (f {{$fieldName}}Field) GreaterOrEqual(v {{.}}) WhereClause {
+func (f {{$fieldName}}Field) GreaterOrEqual(v {{.}}) Where {
 	return Where{
 		Field: string(f),
 		Comp:  CompGTE,
@@ -50,7 +51,7 @@ func (f {{$fieldName}}Field) GreaterOrEqual(v {{.}}) WhereClause {
 }
 
 // LessOrEqual returns a WhereClause for this field.
-func (f {{$fieldName}}Field) LessOrEqual(v {{.}}) WhereClause {
+func (f {{$fieldName}}Field) LessOrEqual(v {{.}}) Where {
 	return Where{
 		Field: string(f),
 		Comp:  CompLTE,
@@ -59,7 +60,7 @@ func (f {{$fieldName}}Field) LessOrEqual(v {{.}}) WhereClause {
 }
 
 // NotEqual returns a WhereClause for this field.
-func (f {{$fieldName}}Field) NotEqual(v {{.}}) WhereClause {
+func (f {{$fieldName}}Field) NotEqual(v {{.}}) Where {
 	return Where{
 		Field: string(f),
 		Comp:  CompNE,
@@ -68,7 +69,7 @@ func (f {{$fieldName}}Field) NotEqual(v {{.}}) WhereClause {
 }
 
 // In returns a WhereClause for this field.
-func (f {{$fieldName}}Field) In(vals []{{.}}) WhereClause {
+func (f {{$fieldName}}Field) In(vals []{{.}}) InClause {
 	values := make([]interface{}, len(vals))
 	for x := range vals {
 		values[x] = vals[x]
@@ -84,7 +85,7 @@ func (f {{$fieldName}}Field) In(vals []{{.}}) WhereClause {
 {{ range (makeSlice "Jsonb" "sql.NullString" "sql.NullInt64" "sql.NullFloat64" "sql.NullBool" "pq.NullTime" "uuid.NullUUID") }}
 {{ $fieldName := title (replace . "." "" 1) }}
 // IsNull returns a WhereClause that matches when this field is NULL.
-func (f {{$fieldName}}Field) IsNull() WhereClause {
+func (f {{$fieldName}}Field) IsNull() NullClause {
 	return NullClause{
 		Field: string(f),
 		Null: true,
@@ -92,7 +93,7 @@ func (f {{$fieldName}}Field) IsNull() WhereClause {
 }
 
 // IsNotNull returns a WhereClause that matches when this field is not NULL.
-func (f {{$fieldName}}Field) IsNotNull() WhereClause {
+func (f {{$fieldName}}Field) IsNotNull() NullClause {
 	return NullClause{
 		Field: string(f),
 		Null: false,

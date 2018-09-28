@@ -4,9 +4,9 @@ package enum
 
 import (
 	"database/sql/driver"
-	"errors"
 
-	"gnorm.org/postgres-go/example/gnorm"
+	"github.com/gnormal/postgres-go/generated"
+	"github.com/pkg/errors"
 )
 
 // BookType is the 'book_type' enum type from schema 'Public'.
@@ -24,9 +24,9 @@ const (
 func (e BookType) String() string {
 	switch e {
 	case FictionBookType:
-		return "Fiction"
+		return "FICTION"
 	case NonfictionBookType:
-		return "Nonfiction"
+		return "NONFICTION"
 	default:
 		return "UnknownBookType"
 	}
@@ -51,9 +51,9 @@ func (e *BookType) UnmarshalText(text []byte) error {
 // stringified value of BookType.
 func ParseBookType(s string) (BookType, error) {
 	switch s {
-	case "Fiction":
+	case "FICTION":
 		return FictionBookType, nil
-	case "Nonfiction":
+	case "NONFICTION":
 		return NonfictionBookType, nil
 	default:
 		return UnknownBookType, errors.New("invalid BookType")
@@ -75,71 +75,71 @@ func (e *BookType) Scan(src interface{}) error {
 	return e.UnmarshalText(buf)
 }
 
-// BookTypeField is a component that returns a gnorm.WhereClause that contains a
+// BookTypeField is a component that returns a generated.Where that contains a
 // comparison based on its field and a strongly typed value.
 type BookTypeField string
 
-// Equals returns a gnorm.WhereClause for this field.
-func (f BookTypeField) Equals(v BookType) gnorm.WhereClause {
-	return gnorm.Where{
+// Equals returns a generated.WhereClause for this field.
+func (f BookTypeField) Equals(v BookType) generated.Where {
+	return generated.Where{
 		Field: string(f),
-		Comp:  gnorm.CompEqual,
+		Comp:  generated.CompEqual,
 		Value: v,
 	}
 }
 
-// GreaterThan returns a gnorm.WhereClause for this field.
-func (f BookTypeField) GreaterThan(v BookType) gnorm.WhereClause {
-	return gnorm.Where{
+// GreaterThan returns a generated.Where for this field.
+func (f BookTypeField) GreaterThan(v BookType) generated.Where {
+	return generated.Where{
 		Field: string(f),
-		Comp:  gnorm.CompGreater,
+		Comp:  generated.CompGreater,
 		Value: v,
 	}
 }
 
-// LessThan returns a gnorm.WhereClause for this field.
-func (f BookTypeField) LessThan(v BookType) gnorm.WhereClause {
-	return gnorm.Where{
+// LessThan returns a generated.Where for this field.
+func (f BookTypeField) LessThan(v BookType) generated.Where {
+	return generated.Where{
 		Field: string(f),
-		Comp:  gnorm.CompEqual,
+		Comp:  generated.CompEqual,
 		Value: v,
 	}
 }
 
-// GreaterOrEqual returns a gnorm.WhereClause for this field.
-func (f BookTypeField) GreaterOrEqual(v BookType) gnorm.WhereClause {
-	return gnorm.Where{
+// GreaterOrEqual returns a generated.Where for this field.
+func (f BookTypeField) GreaterOrEqual(v BookType) generated.Where {
+	return generated.Where{
 		Field: string(f),
-		Comp:  gnorm.CompGTE,
+		Comp:  generated.CompGTE,
 		Value: v,
 	}
 }
 
-// LessOrEqual returns a gnorm.WhereClause for this field.
-func (f BookTypeField) LessOrEqual(v BookType) gnorm.WhereClause {
-	return gnorm.Where{
+// LessOrEqual returns a generated.Where for this field.
+func (f BookTypeField) LessOrEqual(v BookType) generated.Where {
+	return generated.Where{
 		Field: string(f),
-		Comp:  gnorm.CompLTE,
+		Comp:  generated.CompLTE,
 		Value: v,
 	}
 }
 
-// NotEqual returns a gnorm.WhereClause for this field.
-func (f BookTypeField) NotEqual(v BookType) gnorm.WhereClause {
-	return gnorm.Where{
+// NotEqual returns a generated.Where for this field.
+func (f BookTypeField) NotEqual(v BookType) generated.Where {
+	return generated.Where{
 		Field: string(f),
-		Comp:  gnorm.CompNE,
+		Comp:  generated.CompNE,
 		Value: v,
 	}
 }
 
-// In returns a gnorm.WhereClause for this field.
-func (f BookTypeField) In(vals []BookType) gnorm.WhereClause {
+// In returns a generated.Where for this field.
+func (f BookTypeField) In(vals []BookType) generated.InClause {
 	values := make([]interface{}, len(vals))
 	for x := range vals {
 		values[x] = vals[x]
 	}
-	return gnorm.InClause{
+	return generated.InClause{
 		Field: string(f),
 		Vals:  values,
 	}
