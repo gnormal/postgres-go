@@ -67,7 +67,7 @@ func All(ctx context.Context, db {{$rootPkg}}.DB) ([]*Row, error) {
 }
 
 // CountQuery retrieve one row from '{{ $table }}'.
-func CountQuery(ctx context.Context, db gnorm.DB, where gnorm.WhereClause) (int, error) {
+func CountQuery(ctx context.Context, db {{$rootPkg}}.DB, where {{$rootPkg}}.WhereClause) (int, error) {
 	const origsqlstr = `SELECT
 		count(*) as count
 		FROM {{$schema}}.{{ $table }} WHERE (`
@@ -278,7 +278,7 @@ func Update(ctx context.Context, db {{$rootPkg}}.DB, r *Row) error {
 {{end}}
 
 // InsertIgnore inserts the row into the database but ignores conflicts
-func InsertIgnore(ctx context.Context, db gnorm.DB, r *Row, constraint string) error {
+func InsertIgnore(ctx context.Context, db {{$rootPkg}}.DB, r *Row, constraint string) error {
 	sqlstr := `INSERT INTO {{$schema}}.{{ $table }} ` +
 		{{- if gt (len $insertCols) 0}}
 		`(

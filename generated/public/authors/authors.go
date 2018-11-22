@@ -51,7 +51,7 @@ func All(ctx context.Context, db generated.DB) ([]*Row, error) {
 }
 
 // CountQuery retrieve one row from 'authors'.
-func CountQuery(ctx context.Context, db gnorm.DB, where gnorm.WhereClause) (int, error) {
+func CountQuery(ctx context.Context, db generated.DB, where generated.WhereClause) (int, error) {
 	const origsqlstr = `SELECT
 		count(*) as count
 		FROM public.authors WHERE (`
@@ -197,7 +197,7 @@ func Insert(ctx context.Context, db generated.DB, r *Row) error {
 }
 
 // InsertIgnore inserts the row into the database but ignores conflicts
-func InsertIgnore(ctx context.Context, db gnorm.DB, r *Row, constraint string) error {
+func InsertIgnore(ctx context.Context, db generated.DB, r *Row, constraint string) error {
 	sqlstr := `INSERT INTO public.authors ` +
 		`(
 			name
